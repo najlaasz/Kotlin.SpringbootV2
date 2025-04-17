@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class OnlineOrdering {
+class OnlineOrdering (val ordersRepositry: OrdersRepositry){
 
 
 
@@ -23,7 +23,24 @@ class OnlineOrdering {
     fun allOrder (): List<customerOrder>{
         return customerOrdList
     }
+
+    @PostMapping("/orderDB")
+    fun orderDB (@RequestBody newOrder: customerOrderDB){
+        var theOrder= OrdersEntity()
+        theOrder.userId = newOrder.userId
+        theOrder.resturant = newOrder.resturant
+        theOrder.items = newOrder.items
+        ordersRepositry.save(theOrder)
+
+    }
+
+    @GetMapping("/orderDB")
+    fun orderDB ():List<OrdersEntity>{
+        var allOrderDB = OrdersEntity()
+        return ordersRepositry.findAll()
+    }
 }
 
 
 data class customerOrder(var user: String,var resturant: String , var items: List<String>)
+data class customerOrderDB(var userId: Int,var resturant: String , var items: String)
